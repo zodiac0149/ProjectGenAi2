@@ -12,6 +12,7 @@ import models
 import auth
 import chat
 import analytics
+import profiles
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -29,6 +30,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(chat.router)
 app.include_router(analytics.router)
+app.include_router(profiles.router)
 
 # Security: Global Exception Handling
 @app.exception_handler(Exception)

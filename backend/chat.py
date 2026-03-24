@@ -2,14 +2,13 @@ import os
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from datetime import datetime
 import models
 from database import get_db
+from auth import get_current_user
 
 try:
     from langchain_groq import ChatGroq
     from langchain.schema import SystemMessage, HumanMessage
-    # Llama 3 is blazing fast and extremely capable for health context
     llm = ChatGroq(model_name="llama3-8b-8192", temperature=0)
 except Exception:
     llm = None
@@ -33,7 +32,11 @@ RULES:
 """
 
 @router.post("/", response_model=ChatResponse)
-def chat_with_ai(request: ChatRequest, db: Session = Depends(get_db)):
+def chat_with_ai(request: ChatRequest, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    # SECURITY: Ensure a patient can only chat as themselves, unless they are a provider
+    if current_user.id != request.user_id and current_user.role != "provider":
+        raise HTTPException(status_code=403, detail="Unauthorized access to user context.")
+
     flagged = False
     
     log = models.InteractionLogs(user_id=request.user_id, query=request.message)
