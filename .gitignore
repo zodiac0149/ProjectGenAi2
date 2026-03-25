@@ -1,0 +1,30 @@
+# Python environment
+venv/
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Databases
+*.db
+*.sqlite3
+backend/medcompanion.db
+
+# Environment Variables (CRITICAL: DO NOT UPLOAD PUBLICLY)
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Node/Next.js
+node_modules/
+npm-debug.log
+.next/
+out/
+build/
+coverage/
+
+# IDE/OS files
+.vscode/
+.idea/
+.DS_Store
